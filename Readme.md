@@ -9,7 +9,7 @@ typora-copy-images-to: assets
 
 shift + 鼠标右键 打开 powershell
 
-![1696040895090](/1696040895090.png)
+![1696040895090](/assets/1696040895090.png)
 
 创建的名字中不能有大写字母
 
