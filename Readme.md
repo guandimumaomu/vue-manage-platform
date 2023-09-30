@@ -34,3 +34,32 @@ ESLint对代码进行修正
 ![1696041528172](/1696041528172.png)
 
 存放在单个文件中
+
+
+
+## Element脚手架中的使用
+
+### 安装
+
+npm i element-ui -S
+
+![1696045092058](/1696045092058.png)
+
+
+
+### 全局引入
+
+```js
+import Vue from 'vue';
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import App from './App.vue';
+
+Vue.use(ElementUI);
+
+new Vue({
+  el: '#app',
+  render: h => h(App)
+});
+```
+
