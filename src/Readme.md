@@ -2,9 +2,7 @@
 typora-copy-images-to: assets
 ---
 
-# Vue2后台管理平台笔记
-
-## 脚手架搭建
+#脚手架搭建
 
 shift + 鼠标右键 打开 powershell
 
@@ -36,15 +34,15 @@ ESLint对代码进行修正
 
 
 
-## Element脚手架中的使用
+#Element脚手架中的使用
 
-### 安装
+##安装
 
 npm i element-ui -S
 
 ![1696045092058](assets/1696045092058.png)
 
-### 全局引入
+##全局引入
 
 ```js
 import Vue from 'vue';
@@ -59,4 +57,8 @@ new Vue({
   render: h => h(App)
 });
 ```
+
+
+
+# Vue路由的使用
 
