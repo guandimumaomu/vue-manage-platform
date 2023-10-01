@@ -1,11 +1,11 @@
 <template>
-  <div>用户页面</div>
+  <div>首页</div>
 </template>
 
 <script>
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
-  name: 'User',
+  name: 'home',
   data () {
     return {}
   }
