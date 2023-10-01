@@ -1,5 +1,5 @@
 ---
-typora-copy-images-to: src\assets
+typora-copy-images-to: \assets
 ---
 
 ![Backstage](src/assets/Backstage.jpg)

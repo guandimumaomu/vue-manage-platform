@@ -4,7 +4,9 @@
       <common-aside></common-aside>
     </el-aside>
     <el-container>
-      <el-header>Header</el-header>
+      <el-header>
+        <common-header></common-header>
+      </el-header>
       <el-main>
         <router-view></router-view>
       </el-main>
@@ -14,11 +16,13 @@
 
 <script>
 import CommonAside from '@/components/CommonAside.vue'
+import CommonHeader from '@/components/CommonHeader.vue'
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Main',
   components: {
-    CommonAside
+    CommonAside,
+    CommonHeader
     // 这里注册了一个子组件CommonAside，它可以在当前组件的模板中使用。
     // 这将在模板中添加一个自定义标签<common-aside></common-aside>，
     // 并将其渲染为CommonAside组件的内容。
