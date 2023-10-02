@@ -4,24 +4,22 @@
            text-color="#fff"
            active-text-color="#ffd04b"
            @open="handleOpen" @close="handleClose" :collapse="isCollapse">
-    <h3>通用后台管理系统</h3>
+    <h3>{{isCollapse ? '后台' : '通用后台管理系统'}}</h3>
 
     <el-menu-item v-for="item in noChildren" @click="clickMenu(item)" :index="item.path" :key="item.path">
-      <template v-slot:title>
         <i :class="'el-icon-' + item.icon"></i>
-        <span >{{item.label}}</span>
-      </template>
+        <span slot="title">{{item.label}}</span>
     </el-menu-item>
 
     <el-submenu v-for="item in hasChildren" @click="clickMenu(item)" :index="item.path" :key="item.path">
-        <template v-slot:title>
-          <i :class="'el-icon-'+item.icon"></i>
-          <span>{{item.label}}</span>
-        </template>
+      <template v-slot:title>
+        <i :class="'el-icon-'+item.icon"></i>
+        <span slot="title">{{item.label}}</span>
+      </template>
         <el-menu-item-group v-for="subItem in item.children" :key="subItem.path">
           <el-menu-item :index="subItem.path">{{ subItem.label }}</el-menu-item>
         </el-menu-item-group>
-        </el-submenu>
+    </el-submenu>
   </el-menu>
 </template>
 
@@ -29,7 +27,6 @@
 export default {
   data () {
     return {
-      isCollapse: false,
       menu: [
         {
           path: '/',
@@ -95,6 +92,9 @@ export default {
     },
     hasChildren () {
       return this.menu.filter(item => item.children)
+    },
+    isCollapse () {
+      return this.$store.state.tab.isCollapse // ?
     }
   }
 }
