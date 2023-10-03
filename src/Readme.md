@@ -2394,3 +2394,8 @@ export default new HttpRequest(baseUrl)
 
 
 
+# mock模拟列表数据
+
+用mock模拟接口响应的数据
+
+mock可以拦截ajax请求，

@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { getMenu } from '@/api/data'
+import { getData } from '@/api/data'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -56,44 +56,7 @@ export default {
   data () {
     return {
       userImg: require('@/assets/images/user.png'),
-      tableData: [
-        {
-          name: 'oppo',
-          todayBuy: 100,
-          monthBuy: 300,
-          totalBuy: 800
-        },
-        {
-          name: 'vivo',
-          todayBuy: 100,
-          monthBuy: 300,
-          totalBuy: 800
-        },
-        {
-          name: '苹果',
-          todayBuy: 100,
-          monthBuy: 300,
-          totalBuy: 800
-        },
-        {
-          name: '小米',
-          todayBuy: 100,
-          monthBuy: 300,
-          totalBuy: 800
-        },
-        {
-          name: '三星',
-          todayBuy: 100,
-          monthBuy: 300,
-          totalBuy: 800
-        },
-        {
-          name: '魅族',
-          todayBuy: 100,
-          monthBuy: 300,
-          totalBuy: 800
-        }
-      ],
+      tableData: [],
       tableLabel: {
         name: '课程',
         todayBuy: '今日购买',
@@ -142,7 +105,11 @@ export default {
     }
   },
   mounted () {
-    getMenu().then(res => {
+    getData().then(res => {
+      const { code, data } = res.data
+      if (code === 20000) {
+        this.tableData = data.tableData
+      }
       console.log(res)
     })
   }
