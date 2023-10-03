@@ -2399,3 +2399,163 @@ export default new HttpRequest(baseUrl)
 用mock模拟接口响应的数据
 
 mock可以拦截ajax请求，
+
+
+
+# echarts使用
+
+折线图、柱状图和饼状图
+
+
+
+##引入
+
+新建一个`echarts`文件夹，在文件夹内新建`index.html`文件，
+
+copy官网的代码
+
+```js
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ECharts</title>
+    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <script src="echarts.js"></script>
+  </head>
+  <body>
+    <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <script type="text/javascript">
+      // 基于准备好的dom，初始化echarts实例
+      var myChart = echarts.init(document.getElementById('main'));
+
+      // 指定图表的配置项和数据
+      var option = {
+        title: {
+          text: 'ECharts 入门示例'
+        },
+        tooltip: {},
+        legend: {
+          data: ['销量']
+        },
+        xAxis: {
+          data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+        },
+        yAxis: {},
+        series: [
+          {
+            name: '销量',
+            type: 'bar',
+            data: [5, 20, 36, 10, 10, 20]
+          }
+        ]
+      };
+
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
+```
+
+
+
+## 基本用法
+
+ECharts（Enterprise Charts）是一个开源的可视化图表库，基于JavaScript和HTML5 Canvas，旨在帮助开发者创建丰富、交互性强的数据可视化图表。它由百度前端团队开发和维护，提供了丰富的图表类型，如折线图、柱状图、饼图、散点图、地图等，以及丰富的配置选项和事件处理机制。
+
+以下是ECharts的基本用法和一个简单的示例：
+
+1. 引入ECharts库：首先，需要引入ECharts的JavaScript文件，可以从官方网站或CDN获取。
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="echarts.min.js"></script>
+</head>
+<body>
+    <div id="chart" style="width: 600px; height: 400px;"></div>
+</body>
+</html>
+```
+
+2. 准备一个HTML元素用于渲染图表，通常是一个`<div>`标签，设置好宽度和高度。
+
+3. **创建ECharts实例**：使用JavaScript代码创建一个ECharts实例，并绑定到上面的HTML元素。
+
+```javascript
+// 获取HTML元素
+var chartDom = document.getElementById('chart');
+
+// 创建ECharts实例
+var myChart = echarts.init(chartDom);
+```
+
+4. **配置图表选项**：定义图表的类型、数据、样式等各种选项。
+
+```javascript
+var option = {
+  //图表标题
+    title: {
+        text: '示例图表'
+    },
+    xAxis: {
+        data: ['A', 'B', 'C', 'D', 'E']
+    },
+    yAxis: {},
+    series: [{
+        name: '数据',
+        type: 'bar', // 柱状图
+        data: [10, 20, 15, 30, 25]
+    }]
+};
+```
+
+5. **渲染图表**：将配置好的选项应用到ECharts实例上并渲染图表。
+
+```javascript
+myChart.setOption(option);
+```
+
+这样，你就创建了一个简单的柱状图，并用ECharts进行了可视化。完整的示例代码如下：
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="echarts.min.js"></script>
+</head>
+<body>
+    <div id="chart" style="width: 600px; height: 400px;"></div>
+    <script>
+        var chartDom = document.getElementById('chart');
+        var myChart = echarts.init(chartDom);
+
+        var option = {
+            title: {
+                text: '示例图表'
+            },
+            xAxis: {
+                data: ['A', 'B', 'C', 'D', 'E']
+            },
+            yAxis: {},
+            series: [{
+                name: '数据',
+                type: 'bar', // 柱状图
+                data: [10, 20, 15, 30, 25]
+            }]
+        };
+
+        myChart.setOption(option);
+    </script>
+</body>
+</html>
+```
+
+这是一个非常基础的示例，ECharts支持更复杂的图表类型和丰富的配置选项，可以根据需要进行定制化和交互性的设计。你可以在ECharts的官方文档中找到更多详细的信息和示例：https://echarts.apache.org/en/index.html
+
+
+
+实现折线图
