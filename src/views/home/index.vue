@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import { getMenu } from '@/api/data'
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'home',
@@ -138,6 +140,11 @@ export default {
       ]
 
     }
+  },
+  mounted () {
+    getMenu().then(res => {
+      console.log(res)
+    })
   }
 
 }

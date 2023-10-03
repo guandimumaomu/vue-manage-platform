@@ -1997,10 +1997,6 @@ createEvent({ commit, rootState }, event) {
 
 
 
-
-
-
-
 # Vuex实现左侧折叠
 
 
@@ -2008,4 +2004,393 @@ createEvent({ commit, rootState }, event) {
 
 
 # home组件布局
+
+注意v-for (val, key) in
+
+
+
+
+
+# axios
+
+使用Axios进行API调用
+现在是时候从API加载动态数据到我们的Vue应用程序中了！在这个课程中，我们将学习如何使用Axios作为我们的API客户端来将远程数据加载到我们的Vue应用程序中，我们还将学习如何使用JSON Server作为一个模拟API服务器，以及如何保持我们的服务代码与应用程序的其余部分分开的一些建议最佳实践。如果您刚刚加入我们（或者想要更新您的代码库），这是我们的起始代码。您可以在课程资源中找到我们完成的代码的链接。
+
+🌋 从静态到动态数据
+正如我们在CLI课程中提到的，当我们准备部署我们的应用程序时，我们将运行npm run build，这将打包我们的应用程序并将其与所需的服务器配置一同发布到服务器。这在第5课中提到过。
+
+然而，到目前为止，我们尚未加载任何动态数据到我们的应用程序中。此刻的一切都是静态的。如果我们查看我们的EventCard.vue文件，我们会看到以下硬编码的数据：
+
+    ...
+    <script>
+    export default {
+      data() {
+        return {
+          event: {
+            id: 1,
+            title: '海滩清理',
+            date: '2018年8月19日星期二',
+            time: '6:00',
+            attendees: [
+              { id: 'abc123', name: '亚当·雅尔' },
+              { id: 'def456', name: '格雷格·波拉克' }
+            ]
+          }
+        }
+      }
+    }
+    </script>
+    ...
+相反，我们希望从数据库中提取这些动态事件数据。
+
+将数据加载到我们的Vue应用程序中的最常见方法是在Vue加载后从浏览器中进行API调用。
+
+如上图所示，API调用是在您的Vue页面需要动态数据时根据需要执行的。
+
+📗 用于进行API调用的库
+虽然Vue有一个官方的路由库（Vue Router），但它没有一个官方的用于进行API调用的库。还有其他JavaScript库可以很好地代替您完成这项工作，比如Axios，它是一个面向Promise的用于浏览器和node.js的HTTP客户端库。
+
+Axios具有一整套功能，包括：
+
+执行GET、POST、PUT和DELETE请求
+为每个请求添加身份验证
+如果请求花费太长时间，设置超时
+为每个请求配置默认值
+拦截请求以创建中间件
+正确处理错误并取消请求
+正确序列化和反序列化请求和响应
+是的，它为您提供了很多功能。您能理解为什么最好使用外部库而不是Vue创建自己的库吗？
+
+⤴️ 基本的GET请求
+Axios允许您在JavaScript中执行GET请求，如下所示：
+
+    axios.get('https://example.com/events') // 调用此URL
+      .then(response =>
+        console.log(response.data);  // 当响应返回时，将其记录到控制台
+      })
+      .catch(error => 
+        console.log(error);  // 如果返回错误，将其记录到控制台
+      })
+值得注意的是，此代码是异步的。这意味着当执行上面的代码时，它不会等待。特别是，它不会暂停并等待从https://example.com/events端点接收响应。
+
+当响应返回时，无论何时发生，然后它将被记录到控制台。如果发生错误，它将捕获错误并记录到控制台。
+
+🥅 目标：使用API加载事件
+
+如果您一直在跟随我们构建我们的应用程序，您应该熟悉右侧的屏幕。正如您所看到的，我们正在显示一个事件。在本课的剩余部分，我们的目标是从API加载事件。为了实现这一目标，我们需要：
+
+模拟可以调用的API服务器
+安装Axios
+使用Axios构建API调用
+在我们的组件中使用事件数据
+重新组织我们的代码
+如果您想跟随进行操作，您需要确保您的示例应用程序是最新的。如果您刚刚加入我们（或者您想确保您在正确的步骤上），您可以在此处下载起始代码。
+
+1. 模拟API服务器
+  API后端可以使用后端框架（如Laravel、Ruby on Rails、Express.js或Django等）构建，也可以使用服务（如Firebase、Parse、Back4App或Hoodie等）构建。但是，当我们想要创建一个快速原型时，使用一些简单的东西可能会很有用。例如，JSON服务器可以在不到30秒内为我们提供一个虚假的完整REST API。
+
+在安装它之前，我将编写我们希望它返回的JSON数据（可以在此处下载此文件）。请注意，这里有一个事件数组：
+
+db.json
+
+    {
+      "events": [
+        {
+          "id": 1,
+          "title": "海滩清理",
+          "date": "2018年8月28日",
+          "time": "10:00",
+          "location": "戴通纳海滩",
+          "description": "让我们一起清理海滩。",
+          "organizer": "亚当·雅尔",
+          "category": "可持续发展",
+          "attendees": [
+            {
+              "id": "abc123",
+              "name": "亚当·雅尔"
+            },
+            {
+              "id": "def456",
+              "name": "格雷格·波拉克"
+            },
+            {
+              "id": "ghi789",
+              "name": "贝丝·斯旺森"
+
+
+            },
+            {
+              "id": "jkl101",
+              "name": "玛丽·戈登"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "公园清理",
+          "date": "2018年11月12日",
+          "time": "12:00",
+          "location": "佛罗里达奥兰多北玛格诺利亚街132号",
+          "description": "我们将清理这个公园。",
+          "organizer": "亚当·雅尔",
+          "category": "自然",
+          "attendees": [
+            {
+              "id": "ghi789",
+              "name": "贝丝·斯旺森"
+            },
+            {
+              "id": "jkl101",
+              "name": "玛丽·戈登"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "宠物领养日",
+          "date": "2018年12月2日",
+          "time": "12:00",
+          "location": "佛罗里达奥兰多北玛格诺利亚街132号",
+          "description": "帮助动物找到新家。",
+          "organizer": "格雷格·波拉克",
+          "category": "动物福利",
+          "attendees": [
+            {
+              "id": "abc123",
+              "name": "亚当·雅尔"
+            },
+            {
+              "id": "ghi789",
+              "name": "贝丝·斯旺森"
+            },
+            {
+              "id": "jkl101",
+              "name": "玛丽·戈登"
+            }
+          ]
+        }
+      ]
+    }
+我将把这个文件存储在我们应用程序的根目录。现在让我们安装并启动JSON服务器。我们可以通过运行以下命令来安装它并获取命令行工具（-g）：
+
+```js
+npm install -g json-server
+```
+当我们运行这行命令时，我们应该看到：
+
+```js
+  \{^_^}/ 嗨！
+```
+
+```js
+  正在加载db.json
+  完成
+
+  资源
+  http://localhost:3000/events
+
+  主页
+  http://localhost:3000
+
+  在任何时候输入s +回车键以创建数据库的快照
+  正在观看...
+```
+如果我们在浏览器中访问http://localhost:3000/events，我们应该看到所有我们的事件以JSON格式列出。
+
+2. 安装Axios
+  有两种不同的方法可以安装Axios。由于Vue CLI具有漂亮的用户界面，我将使用它。我将通过运行以下命令来启动Vue CLI：
+
+vue ui
+
+在浏览器中看到的第一件事是：
+
+注意，它说每个插件的最新版本都是3.0.0？在您进行本教程时，您可能会注意到（或者可能不会注意到）已经发布了新版本的库。您可以点击右侧的⬇️图标来安装这些库的最新版本。我现在就这样做。
+
+这样做不仅会更新我的package.json和package-lock.json文件，以包含新的插件版本，还会将这些新版本安装到我的/node_modules目录中。由于我已经更新了Vue CLI，我将重新启动服务器。
+
+接下来，我将点击左侧导航中的第二个项目，将我带到包页面。
+
+看起来我这里也有需要更新的东西，我会现在执行更新。然后，我将点击右上角的“安装依赖项”按钮，搜索“Axios”。我会选择它并点击“安装Axios”。
+
+如果您想要查看CLI用户界面在后台执行的操作，只需查看您的终端窗口即可。
+
+🎙️ 不使用UI - 老派的方式
+如果我想要执行上述所有操作，而不是使用漂亮的用户界面，我可以通过运行以下命令检查过时的库：
+
+npm outdated
+
+鉴于上面的示例应用程序的原始状态，这将显示：
+
+要更新它们中的每一个，只需运行：
+
+npm update <package>
+
+或者只需运行：
+
+npm update
+
+然后通过运行
+
+npm install axios
+
+
+
+
+
+# axios二次封装
+
+**为什么要进行axios二次封装？**
+
+通过封装，你可以方便地在请求发送前和响应返回时拦截请求，执行一些通用逻辑，如在请求中添加请求头，处理响应数据等。
+
+请求拦截器：可以在发请求之前处理一些业务；
+
+响应拦截器：当服务器数据返回以后，可以处理一些事情。
+
+
+
+**在项目中经常使用的API文件夹**：里面放置的是axios请求
+
+如果接口中，路径都带有`/api`
+
+`baseURL:"/api"`
+
+
+
+```js
+//对于axios进行二次封装
+import axios from "axios";
+
+//1.利用axios对象的方法create，去创建一个axios实例
+//2.requests就是axios，只不过稍微配置一下
+const requests = axios.create({
+  //配置对象
+  //基础路径，发请求的时候，很多路径当中都会出现api
+  baseURL:"/api",
+  //代表请求超时的时间5s
+  timeout:5000,
+});
+
+//拦截器不用记住具体写法，可以参考文档复制过来
+//请求拦截器：在发请求之前，请求拦截器可以检测到，可以在请求发出去之前做一些事情
+requests.interceptors.request.use((config)=>{
+  //config：配置对象，对象里面有一个属性很重要，headers请求头
+  return config;
+});
+
+
+//响应拦截器
+response.interceptors.request.use((res)=>{
+  //成功的回调函数：服务器响应数据回来以后，响应拦截器可以检测到，可以做一些事情
+  return res.data;
+},(error)=>{
+  //响应失败的回调函数
+  return Promise.reject(new Error('fail'));
+});
+
+
+//对外暴露
+export default requests;
+```
+
+
+
+
+
+控制台：npm install axios
+
+想法：把axios抽象成工具类
+
+
+
+在src文件夹下新建一个文件夹api，在这个文件夹中创建文件axios.js
+
+
+
+在axios里面要处理项目的相关配置，在src文件夹下新建一个文件夹config，在这个文件夹下创建文件index.js
+
+![1696231571442](assets/1696231571442.png)
+
+**config/index.js**
+
+```js
+// 定义一些项目的相关配置
+export default {
+  baseUrl: {
+    dev: '/api/', // 开发环境
+    pro: ''
+  }
+}
+```
+
+
+
+进行二次封装
+
+**api/axios.js**
+
+```js
+import axios from 'axios'
+import config from '@/config'
+
+// 进行判断，如果是开发环境，就取config中开发环境的接口地址
+const baseUrl = process.env.NODE_ENV ===
+'development'
+  ? config.baseUrl.dev
+  : config.baseUrl.pro
+
+// 写axios工具类，最后对外暴露类的实例
+class HttpRequest {
+  constructor (baseUrl) {
+    this.baseUrl = baseUrl
+  }
+
+  // 定义axios相关配置
+  getInsideConfig () {
+    const config = {
+      baseUrl: this.baseUrl,
+      header: {}
+    }
+    return config
+  }
+
+  // 拦截器
+  interceptors (instance) {
+    // 添加请求拦截器
+    instance.interceptors.request.use(function (config) {
+      // 在发送请求之前做些什么
+      return config
+    }, function (error) {
+      // 对请求错误做些什么
+      return Promise.reject(error)
+    })
+
+    // 添加响应拦截器
+    instance.interceptors.response.use(function (response) {
+      // 2xx 范围内的状态码都会触发该函数。
+      // 对响应数据做点什么
+      return response
+    }, function (error) {
+      // 超出 2xx 范围的状态码都会触发该函数。
+      // 对响应错误做点什么
+      return Promise.reject(error)
+    })
+  }
+
+  request (options) {
+    const instance = axios.create()
+    options = { ...this.getInsideConfig(), ...options }
+    this.interceptors(instance)
+    return instance(options)
+  }
+}
+
+export default new HttpRequest(baseUrl)
+```
+
+
+
+**封装后如何调用class类？**
+
+
 
