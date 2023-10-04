@@ -2567,6 +2567,40 @@ myChart.setOption(option);
 
 
 
+# 数组的操作
+
+##push、splice是重点
+
+
+
+![1696407738754](assets/1696407738754.png)
+
+
+
+## 新增
+
+
+
+![1696407794365](assets/1696407794365.png)
+
+
+
+![1696407853710](assets/1696407853710.png)
+
+
+
+## 删除
+
+![1696407988343](assets/1696407988343.png)
+
+
+
+![1696408010010](assets/1696408010010.png)
+
+
+
+![1696408048332](assets/1696408048332.png)
+
 
 
 # 面包屑&tag
@@ -2629,5 +2663,140 @@ export default {
 
 
 
-# tag功能实现
+# tag标签功能实现
+
+注意route和router
+
+
+
+**/store/tab.js**
+
+```js
+export default {
+  state: {
+    isCollapse: false,
+    tabList: [
+      {
+        // 默认
+        path: '/',
+        name: 'home',
+        label: '首页',
+        icon: 'home'
+      }
+    ],
+
+    currentMenu: null // 高亮显示
+  },
+  mutations: {
+    collapseMenu (state) {
+      state.isCollapse = !state.isCollapse
+    },
+    // 每次点击左侧菜单时，都需要改变tabList
+    selectMenu (state, val) {
+      if (val.name !== 'home') {
+        state.currentMenu = val
+        // 判断原有tabList里存不存在这个路由
+        const result = state.tabList.findIndex(item => item.name === val.name)
+        if (result === -1) {
+          state.tabList.push(val)
+        }
+      } else {
+        // 如果是首页，将当前选中的标识重置
+        state.currentMenu = null
+      }
+    },
+
+    closeTag (state, val) {
+      const result = state.tabList.findIndex(item => item.name === val.name)
+      state.tabList.splice(result, 1)
+    }
+  }
+}
+
+```
+
+
+
+```vue
+<template>
+  <div class="tabs">
+    <el-tag
+      size="small"
+      v-for="(tag, index) in tags"
+      :key="tag.name"
+      //标签名字不是home就可以关闭
+      :closable="tag.name !== 'home'"
+	//路由名字等于当前标签名字就高亮显示
+      :effect="$route.name === tag.name ? 'dark' : 'plain'"
+      @click="changeMenu(tag)" //直接跳转路由到标签名字
+      @close="handleClose(tag, index)"
+    >
+      {{tag.label}}
+    </el-tag>
+
+  </div>
+</template>
+
+<script>
+import { mapState, mapMutations } from 'vuex'
+export default {
+  name: 'CommonTag',
+  data () {
+    return {
+
+    }
+  },
+  methods: {
+    ...mapMutations({
+      close: 'closeTag'
+    }),
+    changeMenu (item) {
+      this.$router.push({
+        name: item.name
+      })
+    },
+  //关闭标签时分为2种情况，标签在最右边跳转到左边一个的标签，标签处在中间则跳转右一个标签
+    handleClose (tag, index) {
+      const length = this.tags.length - 1
+      this.close(tag)
+      // tag标签与当前路由不一致，不需要操作
+      // eslint-disable-next-line no-useless-return
+      if (tag.name !== this.$route.name) return
+      if (index === length) {
+        // 向左进行跳转
+        this.$router.push({
+          name: this.tags[index - 1].name
+        })
+      } else {
+        this.$router.push({
+          name: this.tags[index].name
+        })
+      }
+    }
+  },
+  computed: {
+    ...mapState({
+      tags: state => state.tab.tabList
+    })
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.tabs{
+  padding: 5px;
+  .el-tag{
+    margin-right: 5px;
+    cursor: pointer;
+  }
+}
+</style>
+
+```
+
+删除逻辑分为两部分，删除最右边的tag和删除中间的tag
+
+
+
+# 用户管理页面Form组件
 

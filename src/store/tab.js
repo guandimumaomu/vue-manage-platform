@@ -3,6 +3,7 @@ export default {
     isCollapse: false,
     tabList: [
       {
+        // 默认
         path: '/',
         name: 'home',
         label: '首页',
@@ -29,6 +30,11 @@ export default {
         // 如果是首页，将当前选中的标识重置
         state.currentMenu = null
       }
+    },
+
+    closeTag (state, val) {
+      const result = state.tabList.findIndex(item => item.name === val.name)
+      state.tabList.splice(result, 1)
     }
   }
 }

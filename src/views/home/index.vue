@@ -1,7 +1,7 @@
 <template>
   <el-row class="home" :gutter="20" >
     <el-col :span="10" >
-      <el-card style="margin: 10px" shadow="hover">
+      <el-card style="margin-top: 10px" shadow="hover">
         <div class="user">
           <img :src="userImg" />
           <div class="userinfo">
