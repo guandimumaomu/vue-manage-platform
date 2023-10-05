@@ -2800,3 +2800,40 @@ export default {
 
 # 用户管理页面Form组件
 
+在 Form 组件中，每一个表单域由一个 Form-Item 组件构成，表单域中可以放置各种类型的表单控件，包括 Input、Select、Checkbox、Radio、Switch、DatePicker、TimePicker
+
+![1696469008426](assets/1696469008426.png)
+
+
+
+```vue
+<el-form ref="form" :model="form" label-width="80px">
+  
+  <el-form-item label="活动名称">
+    <el-input v-model="form.name"></el-input>
+  </el-form-item>
+  
+  <el-form-item label="活动区域">
+    <el-select v-model="form.region" placeholder="请选择活动区域">
+      <el-option label="区域一" value="shanghai"></el-option>
+      <el-option label="区域二" value="beijing"></el-option>
+    </el-select>
+  </el-form-item>
+  
+</el-form>
+<script>
+  export default {
+    data() {
+      return {
+        //注意form对象
+        form: {
+          name: '',
+          region: '',
+        }
+      }
+    },
+
+  }
+</script>
+```
+
